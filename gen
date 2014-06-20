@@ -1,0 +1,44 @@
+#!/usr/bin/awk -f
+
+BEGIN {
+    for (i=0; i<=10; i++) {
+        printf("int arg%d(", i)
+        for (a=0; a<i; a++) {
+            printf("%sint a%d",
+                a > 0 ? ", " : "",
+                a)
+        }
+        printf(") {\n    return ")
+        printf("0 ");
+        for (a=0; a<i; a++) {
+            printf(" + a%d", a)
+        }
+        printf(";\n}\n\n")
+    }
+    
+    printf("varfun *funs[] = {\n")
+    for (i=0; i<=10; i++) {
+        printf("    arg%d,\n", i);
+    }
+    printf("};\n")
+
+    printf("int main(int argc, char **argv) {\n")
+
+    for (i=0; i<=10; i++) {
+        printf("    printf(\"arg%d: %%d\\n\",\n",
+            i)
+        printf("    arg%d(", i)
+        for (a=0; a<i; a++) {
+            printf("%d%s", a, a < i - 1 ? ", " : "")
+        }
+
+        printf("));\n");
+    }
+    printf("    printf(\"...huh.\\n\");\n")
+    printf("    this_actually_works();\n")
+
+    # and of course, we want to be free of compiler errors :P
+    printf("    (void)argc; (void)argv;\n")
+
+    printf("    return 0;\n}\n")
+}
